@@ -24,7 +24,7 @@ if (!$ghost){
 }else{
 	my $check = checkHost();
 	if ($check){
-		system "echo -n -e \"\\033]0;$servers{$check}\\007\"";
+		system "echo \"\\033]0;$servers{$check}\\007\"";
 		system "ssh -p $ports{$check} -l $usernames{$check} $ips{$check} $options{$check}\n";
 		system "echo -n -e \"\\033]0;Mac\\007\"";
 	}else{
