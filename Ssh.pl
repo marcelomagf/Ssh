@@ -3,14 +3,22 @@
 use strict;
 use Cwd            qw( abs_path );
 use File::Basename qw( dirname );
+
+# strict don't  like boolean
 use constant false => 0;
 use constant true  => 1;
 
-my $sshagent="/usr/bin/ssh-agent -l";
-my $hostname=`hostname`;
+# Ssh.pl script path
 my $path=dirname(abs_path($0));
 
+# You could change these if you must
+my $sshagent='/usr/bin/ssh-agent -l';
+my $hostname=`/bin/hostname -s`;
+my $conffile="$path/Ssh_hosts.conf";
+
 my $ghost = $ARGV[0] if $ARGV[0];
+
+# Hashes 
 my %ips;
 my %ports;
 my %usernames;
@@ -35,6 +43,7 @@ if (!$ghost){
 	}
 }
 
+# Check if argument is a valid host
 sub checkHost(){
 	for my $key (keys %servers){
 		if ("$ghost" eq "$servers{$key}"){
@@ -47,6 +56,7 @@ sub checkHost(){
 	return false;
 }
 
+# Just prints the menu
 sub printMenu (){
 	print "-------------------\n";
 	print "Hosts:\n";
@@ -60,8 +70,9 @@ sub printMenu (){
 	print "-------------------\n";
 }
 
+# Get the hashes loaded
 sub loadHosts (){
-	my @file = `cat $path/Ssh_hosts.txt`;
+	my @file = `cat $conffile`;
 	my $i = 1;
 	for my $line (@file){
 		if ($line !~ /$\#/){
@@ -77,7 +88,9 @@ sub loadHosts (){
 	}
 }
 
+# load de ssh-agent if it is not running
 sub loadAgent(){
+	# This should be better...
 	my $agentpid = `ps auxww | grep -i ssh-agent | grep -v grep`;
 	if ($agentpid){
 		return;
