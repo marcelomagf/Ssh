@@ -7,6 +7,7 @@ use constant false => 0;
 use constant true  => 1;
 
 my $sshagent="/usr/bin/ssh-agent -l";
+my $hostname=`hostname`;
 my $path=dirname(abs_path($0));
 
 my $ghost = $ARGV[0] if $ARGV[0];
@@ -26,7 +27,7 @@ if (!$ghost){
 	if ($check){
 		system "echo \"\\033]0;$servers{$check}\\007\"";
 		system "ssh -p $ports{$check} -l $usernames{$check} $ips{$check} $options{$check}\n";
-		system "echo -n -e \"\\033]0;Mac\\007\"";
+		system "echo \"\\033]0;$hostname\\007\"";
 	}else{
 		print "-------------------\n";
 		print "No host by that name!: $ghost\n";
